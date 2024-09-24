@@ -1,7 +1,16 @@
 import React from "react";
-import { ChatBubbleLeftEllipsisIcon, TrashIcon } from "@heroicons/react/24/outline";
+import {
+  ChatBubbleLeftEllipsisIcon,
+  TrashIcon,
+} from "@heroicons/react/24/outline";
 
-function SessionButton({ session, isActive, isOpen, onSessionSelect, onDeleteSession }) {
+function SessionButton({
+  session,
+  isActive,
+  isOpen,
+  onSessionSelect,
+  onDeleteSession,
+}) {
   return (
     <div
       key={session.session_id}
@@ -13,9 +22,9 @@ function SessionButton({ session, isActive, isOpen, onSessionSelect, onDeleteSes
     >
       <button
         onClick={() => onSessionSelect(session.session_id)}
-        className={`flex ${
+        className={`flex items-center ${
           isOpen
-            ? "justify-left w-full items-center gap-x-[4px] px-4"
+            ? "justify-left w-full gap-x-[8px] overflow-hidden px-4 py-[8px]"
             : "h-full w-full justify-center"
         } rounded-full text-white ${
           isActive ? "bg-custom-gradient" : "hover:bg-custom-gradient"
@@ -23,11 +32,17 @@ function SessionButton({ session, isActive, isOpen, onSessionSelect, onDeleteSes
       >
         <ChatBubbleLeftEllipsisIcon width={isOpen ? 18 : 20} />
         {isOpen && (
-          <p className="line-clamp-1 text-base">
-            {session.conversation_history.length > 0
-              ? session.conversation_history[0].data.content
-              : session.created_at.substring(0, 19)}
-          </p>
+          <div className="flex flex-col items-start">
+            <p className="line-clamp-1 text-base">
+              {session.conversation_history.length > 0
+                ? session.conversation_history[0].data.content
+                : "New Chat"}
+            </p>
+            <p className="text-xs">
+              {session.created_at.split("T")[0]}{" "}
+              {session.created_at.substring(0, 19).split("T")[1]}
+            </p>
+          </div>
         )}
       </button>
       {isOpen && (
