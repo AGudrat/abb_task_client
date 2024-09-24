@@ -1,10 +1,7 @@
-import { useState, useEffect } from 'react';
-import {
-  getSessions,
-  deleteSession,
-} from '@/services/sessions.service';
+import { useState, useEffect } from "react";
+import { getSessions, deleteSession } from "@/services/sessions.service";
 
-export const useSessions = (initialSessionId = null) => {
+export const useSessions = (initialSessionId = null, triggerPopper) => {
   const [sessions, setSessions] = useState([]);
   const [currentSessionId, setCurrentSessionId] = useState(initialSessionId);
   const [isFileUploadOpen, setIsFileUploadOpen] = useState(false);
@@ -21,7 +18,7 @@ export const useSessions = (initialSessionId = null) => {
         const data = response.data;
         // Sort sessions by created_at date in descending order
         const sortedSessions = data.sort(
-          (a, b) => new Date(b.created_at) - new Date(a.created_at)
+          (a, b) => new Date(b.created_at) - new Date(a.created_at),
         );
 
         setSessions(sortedSessions);
@@ -36,7 +33,7 @@ export const useSessions = (initialSessionId = null) => {
           setIsFileUploadOpen(true);
         }
       })
-      .catch((error) => console.error('Error fetching sessions:', error));
+      .catch((error) => console.error("Error fetching sessions:", error));
   };
 
   // Handle session selection
@@ -52,7 +49,7 @@ export const useSessions = (initialSessionId = null) => {
           // Remove the session from the list
           setSessions((prevSessions) => {
             const updatedSessions = prevSessions.filter(
-              (session) => session.session_id !== sessionId
+              (session) => session.session_id !== sessionId,
             );
             return updatedSessions;
           });
@@ -62,7 +59,7 @@ export const useSessions = (initialSessionId = null) => {
             if (sessions.length > 1) {
               // Set current session to the next available session
               const nextSession = sessions.find(
-                (session) => session.session_id !== sessionId
+                (session) => session.session_id !== sessionId,
               );
               setCurrentSessionId(nextSession.session_id);
             } else {
@@ -72,10 +69,10 @@ export const useSessions = (initialSessionId = null) => {
             }
           }
         } else {
-          console.error('Failed to delete session');
+          console.error("Failed to delete session");
         }
       })
-      .catch((error) => console.error('Error deleting session:', error));
+      .catch((error) => console.error("Error deleting session:", error));
   };
 
   // Handle upload success
@@ -90,7 +87,7 @@ export const useSessions = (initialSessionId = null) => {
     setSessions((prevSessions) => {
       const updatedSessions = [newSession, ...prevSessions];
       updatedSessions.sort(
-        (a, b) => new Date(b.created_at) - new Date(a.created_at)
+        (a, b) => new Date(b.created_at) - new Date(a.created_at),
       );
       return updatedSessions;
     });
@@ -112,6 +109,9 @@ export const useSessions = (initialSessionId = null) => {
     } else {
       // If no sessions, reopen the modal and show error popper
       setIsFileUploadOpen(true);
+      if (triggerPopper) {
+        triggerPopper("No sessions available. Please upload a file.", "error");
+      }
     }
   };
 

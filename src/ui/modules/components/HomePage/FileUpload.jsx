@@ -20,8 +20,8 @@ const FileUpload = ({ onClose, triggerPopper, onUploadSuccess }) => {
       setFileName(file.name); // Set file name for display
       sendFileToAPI(file);
     } else {
-      setErrorMessage("Yalnız .txt fayllar yüklənə bilər.");
-      triggerPopper("Yalnız .txt fayllar yüklənə bilər.", "error");
+      setErrorMessage("Only .txt files can be uploaded.");
+      triggerPopper("Only .txt files can be uploaded.", "error");
     }
   };
 
@@ -46,13 +46,13 @@ const FileUpload = ({ onClose, triggerPopper, onUploadSuccess }) => {
       }
     })
       .then((response) => {
-        triggerPopper("Fayl uğurla yükləndi!", "success");
+        triggerPopper("File uploaded successfully!", "success");
         setIsLoading(false);
         onUploadSuccess(response.data);
       })
       .catch((error) => {
-        setErrorMessage("Fayl yüklənərkən xəta baş verdi.");
-        triggerPopper("Fayl yüklənərkən xəta baş verdi.", "error");
+        setErrorMessage("An error occurred while uploading the file.");
+        triggerPopper("An error occurred while uploading the file.", "error");
         setIsLoading(false);
       });
   };

@@ -43,6 +43,9 @@ module.exports = {
       backgroundImage: {
         'custom-gradient': 'linear-gradient(to right, #1d3951, #1d384f, #1e374d, #1e364b, #1e3549, #1f3448, #1f3346, #203245, #213044, #222f42, #232d41, #242c3f)',
       },
+      height: {
+        'screen-minus-32': 'calc(100vh - 32px)',
+      },
       keyframes: {
         moveRight: {
           "0%": { transform: "translateX(100%)", opacity: 0.5 },
@@ -77,7 +80,6 @@ module.exports = {
         144: "36rem",
       },
       colors: {
-        primary: "#184BFE",
         black:"#302c34",
         'black-light':"#403444",
         text: "#212529",
