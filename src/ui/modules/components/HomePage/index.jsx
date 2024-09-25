@@ -91,6 +91,7 @@ export default function HomePage() {
           isSending={isSending}
           handleSendMessage={handleSendMessage}
           openFileUpload={openFileUpload}
+          currentSessionId={currentSessionId}
         />
       </div>
     </React.StrictMode>

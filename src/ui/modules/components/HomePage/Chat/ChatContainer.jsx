@@ -7,10 +7,11 @@ function ChatContainer({
   isSending,
   handleSendMessage,
   openFileUpload,
+  currentSessionId
 }) {
   return (
     <React.StrictMode>
-      <ChatView conversationHistory={conversationHistory} />
+      <ChatView conversationHistory={conversationHistory} currentSessionId={currentSessionId} />
       <ChatInput
         onSendMessage={handleSendMessage}
         isSending={isSending}

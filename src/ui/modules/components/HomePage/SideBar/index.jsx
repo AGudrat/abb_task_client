@@ -2,6 +2,8 @@ import React from "react";
 import SessionManager from "./SessionManager";
 import Image from "next/image";
 import logo from "@/ui/assets/logo.png";
+import Link from "next/link";
+import { PresentationChartLineIcon } from "@heroicons/react/24/outline";
 function SideBar({
   sessions,
   onSessionSelect,
@@ -66,6 +68,26 @@ function SideBar({
         onDeleteSession={onDeleteSession}
         currentSessionId={currentSessionId}
       />
+      <div className="mb-[10px] mt-auto flex flex-col">
+        <Link
+          href={"/data-visualization"}
+          className={`flex items-center
+            ${
+              isSidebarOpen
+                ? "justify-left h-[38px] w-full gap-x-[8px] overflow-hidden px-4"
+                : "h-[54px] w-[54px] items-center justify-center"
+            } rounded-full text-white hover:bg-custom-gradient`}
+        >
+          {isSidebarOpen ? (
+            <React.StrictMode>
+              <PresentationChartLineIcon width={18} />
+              <p>Data Visualization</p>
+            </React.StrictMode>
+          ) : (
+            <PresentationChartLineIcon width={20} />
+          )}
+        </Link>
+      </div>
     </div>
   );
 }

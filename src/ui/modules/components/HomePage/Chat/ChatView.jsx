@@ -1,10 +1,56 @@
-import React, { useEffect, useRef } from "react";
+import { useSessions } from "@/hooks/useSessions";
+import {
+  HandThumbDownIcon,
+  HandThumbUpIcon,
+} from "@heroicons/react/24/outline";
+import {
+  HandThumbDownIcon as HandThumbDownIconActive,
+  HandThumbUpIcon as HandThumbUpIconActive,
+} from "@heroicons/react/24/solid";
+import React, { useEffect, useRef, useState } from "react";
 
-function ChatView({ conversationHistory }) {
+function ChatView({ conversationHistory: initialConversationHistory, currentSessionId }) {
   const messagesEndRef = useRef(null);
+  const [conversationHistory, setConversationHistory] = useState(initialConversationHistory);
+
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [conversationHistory]);
+
+  const handleLikeDislike = (index, liked) => {
+    fetch("http://localhost:8000/api/like-dislike/", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        session_id: currentSessionId,
+        message_index: index,
+        liked: liked,
+      }),
+    })
+      .then((response) => {
+        if (response.ok) {
+          // Update the conversation history with the new like/dislike status
+          setConversationHistory((prevHistory) =>
+            prevHistory.map((message, i) =>
+              i === index
+                ? {
+                    ...message,
+                    liked: liked, // Update the liked status of the message
+                  }
+                : message
+            )
+          );
+        } else {
+          alert("Error updating like/dislike status.");
+        }
+      })
+      .catch((error) => {
+        console.error("Error updating like/dislike:", error);
+        alert("Error updating like/dislike status.");
+      });
+  };
   return (
     <div className="relative mb-[80px] w-full max-w-5xl flex-1 overflow-y-auto p-4">
       {conversationHistory.length < 1 && (
@@ -40,12 +86,12 @@ function ChatView({ conversationHistory }) {
         </div>
       )}
       {conversationHistory.map((message, index) => {
-        const isHuman = message.data.type === "human";
-        const isLoading = message.data.loading;
+        const isHuman = message.type === "human";
+        const isLoading = message.loading;
         return (
           <div
             key={message.id || index}
-            className={`flex ${isHuman ? "justify-end" : "justify-start"} mb-2`}
+            className={`flex ${isHuman ? "justify-end" : "justify-start"} relative mb-2`}
           >
             <div className={`max-w-2xl rounded-lg bg-white p-2 text-black `}>
               {isLoading ? (
@@ -57,11 +103,39 @@ function ChatView({ conversationHistory }) {
                   </div>
                 </div>
               ) : (
-                <div
-                  dangerouslySetInnerHTML={{ __html: message.data.content }}
-                ></div>
+                <div>
+                  <div
+                    dangerouslySetInnerHTML={{ __html: message.content }}
+                  ></div>
+                </div>
               )}
             </div>
+            {!isHuman && !isLoading && (
+              <div className="absolute bottom-[-32px] mt-2 flex gap-x-[3px]">
+                <button
+                  disabled={message.liked === true}
+                   className="hover flex h-[30px] w-[30px] cursor-pointer items-center justify-center rounded-[8px] text-black-light hover:bg-custom-gradient hover:bg-opacity-85 hover:text-white"
+                  onClick={() => handleLikeDislike(index, true)}
+                >
+                  {message.liked === true ? (
+                    <HandThumbUpIconActive width={18} />
+                  ) : (
+                    <HandThumbUpIcon width={18} />
+                  )}
+                </button>
+                <button
+                  disabled={message.liked === false}
+                  className="hover flex h-[30px] w-[30px] cursor-pointer items-center justify-center rounded-[8px] text-black-light hover:bg-custom-gradient hover:bg-opacity-85 hover:text-white"
+                  onClick={() => handleLikeDislike(index, false)}
+                >
+                  {message.liked === false ? (
+                    <HandThumbDownIconActive width={18} />
+                  ) : (
+                    <HandThumbDownIcon width={18} />
+                  )}
+                </button>
+              </div>
+            )}
           </div>
         );
       })}

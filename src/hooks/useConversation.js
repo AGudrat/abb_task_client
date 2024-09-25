@@ -22,8 +22,7 @@ export const useConversation = (currentSessionId, triggerPopper) => {
   const fetchConversationHistory = (sessionId) => {
     getConversationHistory(sessionId)
       .then((response) => {
-        const data = response.data;
-        setConversationHistory(data.conversation_history);
+        setConversationHistory(response.data.conversation_history);
       })
       .catch((error) => {
         console.error("Error fetching conversation history:", error);

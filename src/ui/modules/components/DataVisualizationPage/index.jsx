@@ -10,25 +10,40 @@ import {
   Tooltip,
   CartesianGrid,
   ResponsiveContainer,
+  Legend,
 } from "recharts";
 import ReactDatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 
 function DataVisualizationPage() {
   const [interactions, setInteractions] = useState([]);
+  const [interactionsOverTime, setInteractionsOverTime] = useState([]);
+  const [questionLengthDistribution, setQuestionLengthDistribution] = useState({});
+  const [topWords, setTopWords] = useState([]);
+  const [likedDislikedData, setLikedDislikedData] = useState({ liked: [], disliked: [] });
   const [startDate, setStartDate] = useState(null);
   const [endDate, setEndDate] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
   useEffect(() => {
     fetch("http://localhost:8000/api/interactions/")
       .then((response) => response.json())
       .then((data) => {
-        setInteractions(data);
+        setInteractions(data.interactions); // Set interactions
+        setInteractionsOverTime(data.interactions_over_time); // Set interactions over time
+        setQuestionLengthDistribution(data.question_length_distribution); // Set question length distribution
+        setTopWords(data.top_10_most_frequent_words); // Set top 10 most frequent words
+        setLikedDislikedData(data.liked_disliked_interactions); // Set liked and disliked data
+        setLoading(false);
       })
-      .catch((error) => console.error("Error fetching interactions:", error));
+      .catch((error) => {
+        console.error("Error fetching interactions:", error);
+        setError("Failed to fetch data.");
+        setLoading(false);
+      });
   }, []);
 
-  // Filter interactions based on date range
   const filteredInteractions = interactions.filter((interaction) => {
     const interactionDate = new Date(interaction.timestamp);
     if (startDate && interactionDate < startDate) return false;
@@ -36,56 +51,26 @@ function DataVisualizationPage() {
     return true;
   });
 
-  /** Data Processing for Charts **/
+  // Question Length Distribution Data (convert to array format for BarChart)
+  const bins = Object.keys(questionLengthDistribution).map((key) => ({
+    range: key,
+    count: questionLengthDistribution[key],
+  }));
 
-  // 1. Interactions Over Time
-  const interactionsByDate = filteredInteractions.reduce((acc, interaction) => {
-    const date = new Date(interaction.timestamp).toLocaleDateString();
-    acc[date] = (acc[date] || 0) + 1;
-    return acc;
-  }, {});
+  // Top 10 Most Frequent Words
+  const wordData = topWords.map(([word, count]) => ({
+    word,
+    count,
+  }));
 
-  const interactionsChartData = Object.entries(interactionsByDate).map(
-    ([date, count]) => ({
-      date,
-      count,
-    }),
-  );
+  // Like/Dislike Chart Data
+  const likeDislikeChartData = [
+    { name: "Liked", count: likedDislikedData.liked.length },
+    { name: "Disliked", count: likedDislikedData.disliked.length },
+  ];
 
-  // 2. Question Length Distribution
-  const questionLengths = filteredInteractions.map(
-    (interaction) => interaction.question.length,
-  );
-  const bins = [0, 50, 100, 150, 200, 250, 300, 350];
-
-  const histogramData = bins.map((bin, index) => {
-    const nextBin = bins[index + 1] || Infinity;
-    const count = questionLengths.filter(
-      (length) => length >= bin && length < nextBin,
-    ).length;
-    return {
-      range: `${bin} - ${nextBin !== Infinity ? nextBin : "+"}`,
-      count,
-    };
-  });
-
-  // 3. Top 10 Frequent Words
-  const wordCounts = filteredInteractions.reduce((acc, interaction) => {
-    const words = interaction.question.toLowerCase().match(/\b\w+\b/g);
-    if (words) {
-      words.forEach((word) => {
-        if (word.length > 2) {
-          acc[word] = (acc[word] || 0) + 1;
-        }
-      });
-    }
-    return acc;
-  }, {});
-
-  const wordData = Object.entries(wordCounts)
-    .map(([word, count]) => ({ word, count }))
-    .sort((a, b) => b.count - a.count)
-    .slice(0, 10);
+  if (loading) return <p>Loading...</p>;
+  if (error) return <p>{error}</p>;
 
   return (
     <div className="data-visualization">
@@ -116,29 +101,34 @@ function DataVisualizationPage() {
       {/* Interactions Over Time */}
       <h2>Interactions Over Time</h2>
       <ResponsiveContainer width="100%" height={400}>
-        <LineChart data={interactionsChartData}>
+        <LineChart data={interactionsOverTime}>
           <XAxis dataKey="date" />
           <YAxis allowDecimals={false} />
-          <Tooltip />
+          <Tooltip
+            formatter={(value, name) => [value, name]}
+            labelFormatter={(label) => `Date: ${label}`}
+          />
           <CartesianGrid strokeDasharray="3 3" />
           <Line
             type="monotone"
             dataKey="count"
-            stroke="#8884d8"
+            stroke="#82ca9d"
             name="Interactions"
           />
+          <Legend />
         </LineChart>
       </ResponsiveContainer>
 
       {/* Question Length Distribution */}
       <h2>Question Length Distribution</h2>
       <ResponsiveContainer width="100%" height={400}>
-        <BarChart data={histogramData}>
+        <BarChart data={bins}>
           <XAxis dataKey="range" />
           <YAxis allowDecimals={false} />
-          <Tooltip />
+          <Tooltip formatter={(value, name) => [`${value} Questions`, name]} />
           <CartesianGrid strokeDasharray="3 3" />
-          <Bar dataKey="count" fill="#82ca9d" name="Questions" />
+          <Bar dataKey="count" fill="#8884d8" name="Questions" />
+          <Legend />
         </BarChart>
       </ResponsiveContainer>
 
@@ -148,9 +138,23 @@ function DataVisualizationPage() {
         <BarChart data={wordData} layout="vertical">
           <XAxis type="number" allowDecimals={false} />
           <YAxis type="category" dataKey="word" />
-          <Tooltip />
+          <Tooltip formatter={(value, name) => [`${value} Occurrences`, name]} />
           <CartesianGrid strokeDasharray="3 3" />
-          <Bar dataKey="count" fill="#8884d8" name="Occurrences" />
+          <Bar dataKey="count" fill="#82ca9d" name="Occurrences" />
+          <Legend />
+        </BarChart>
+      </ResponsiveContainer>
+
+      {/* Like/Dislike Chart */}
+      <h2>Likes vs Dislikes</h2>
+      <ResponsiveContainer width="100%" height={400}>
+        <BarChart data={likeDislikeChartData}>
+          <CartesianGrid strokeDasharray="3 3" />
+          <XAxis dataKey="name" />
+          <YAxis />
+          <Tooltip />
+          <Legend />
+          <Bar dataKey="count" fill="#82ca9d" name="Interactions" />
         </BarChart>
       </ResponsiveContainer>
     </div>
