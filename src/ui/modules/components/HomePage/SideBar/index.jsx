@@ -3,7 +3,7 @@ import SessionManager from "./SessionManager";
 import Image from "next/image";
 import logo from "@/ui/assets/logo.png";
 import Link from "next/link";
-import { PresentationChartLineIcon } from "@heroicons/react/24/outline";
+import { DocumentMagnifyingGlassIcon, PresentationChartLineIcon } from "@heroicons/react/24/outline";
 function SideBar({
   sessions,
   onSessionSelect,
@@ -11,6 +11,7 @@ function SideBar({
   onDeleteSession,
   currentSessionId,
   handleSidebarToggle,
+  toggleScraperModal,
 }) {
   return (
     <div
@@ -68,7 +69,7 @@ function SideBar({
         onDeleteSession={onDeleteSession}
         currentSessionId={currentSessionId}
       />
-      <div className="mb-[10px] mt-auto flex flex-col">
+      <div className="mb-[10px] gap-y-[8px] mt-auto flex flex-col">
         <Link
           href={"/data-visualization"}
           className={`flex items-center
@@ -87,6 +88,24 @@ function SideBar({
             <PresentationChartLineIcon width={20} />
           )}
         </Link>
+        <div
+          onClick={() => toggleScraperModal()}
+          className={`flex items-center
+            ${
+              isSidebarOpen
+                ? "justify-left h-[38px] w-full gap-x-[8px] overflow-hidden px-4"
+                : "h-[54px] w-[54px] items-center justify-center"
+            } rounded-full text-white hover:bg-custom-gradient cursor-pointer`}
+        >
+          {isSidebarOpen ? (
+            <React.StrictMode>
+              <DocumentMagnifyingGlassIcon width={18} />
+              <p>Scrape Website</p>
+            </React.StrictMode>
+          ) : (
+            <DocumentMagnifyingGlassIcon width={20} />
+          )}
+        </div>
       </div>
     </div>
   );

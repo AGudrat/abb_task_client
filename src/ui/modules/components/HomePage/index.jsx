@@ -8,6 +8,7 @@ import { useConversation } from "@/hooks/useConversation";
 import Header from "../../blocks/Header";
 import ChatContainer from "./Chat/ChatContainer";
 import SideBar from "./SideBar/index";
+import ScraperModal from "./ScraperModal";
 
 const FileUpload = dynamic(
   () => import("@/ui/modules/components/HomePage/FileUpload"),
@@ -39,6 +40,8 @@ export default function HomePage() {
     sessions,
     currentSessionId,
     isFileUploadOpen,
+    isScraperModalOpen,
+    toggleScraperModal,
     handleSessionSelect,
     handleDeleteSession,
     handleUploadSuccess,
@@ -50,7 +53,6 @@ export default function HomePage() {
     currentSessionId,
     triggerPopper,
   );
-
   // Toggle sidebar
   const handleSidebarToggle = () => {
     setIsSidebarOpen((prevState) => !prevState);
@@ -65,6 +67,7 @@ export default function HomePage() {
         onDeleteSession={handleDeleteSession}
         currentSessionId={currentSessionId}
         handleSidebarToggle={handleSidebarToggle}
+        toggleScraperModal={toggleScraperModal}
       />
       {isFileUploadOpen && (
         <FileUpload
@@ -73,6 +76,9 @@ export default function HomePage() {
           onUploadSuccess={handleUploadSuccess}
         />
       )}
+      {isScraperModalOpen && (
+        <ScraperModal toggleScraperModal={toggleScraperModal} />
+      )}
       <Popper
         message={popperMessage}
         type={popperType}
@@ -80,7 +86,7 @@ export default function HomePage() {
       />
       <div
         className={`chat-view relative my-[16px] mr-[32px] w-full flex-1 flex-col items-center justify-center gap-y-[16px] overflow-hidden rounded-[10px] bg-gradient-to-br from-[#fdf6f3] via-[#f4e1e9] to-[#e5e9f3] max-sm:h-full max-sm:w-full 
-        sm:flex ${isSidebarOpen ? "max-sm:hidden" : "max-sm:h-screen-minus-32 flex max-sm:col-span-12"}`}
+        sm:flex ${isSidebarOpen ? "max-sm:hidden" : "flex max-sm:col-span-12 max-sm:h-screen-minus-32"}`}
       >
         <Header
           handleSidebarToggle={handleSidebarToggle}

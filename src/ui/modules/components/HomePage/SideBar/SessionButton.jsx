@@ -33,7 +33,7 @@ function SessionButton({
         <ChatBubbleLeftEllipsisIcon width={isOpen ? 18 : 20} />
         {isOpen && (
           <div className="flex flex-col items-start">
-            <p className="line-clamp-1 text-base">
+            <p className="line-clamp-1 text-start text-base">
               {session.conversation_history.length > 0
                 ? session.conversation_history[0].data.content
                 : "New Chat"}

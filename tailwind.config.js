@@ -80,8 +80,8 @@ module.exports = {
         144: "36rem",
       },
       colors: {
-        black:"#302c34",
-        'black-light':"#403444",
+        black:"#121212",
+        'black-light':"#121212",
         text: "#212529",
         borderColor: "#E5E6EB",
         gray: "#9CA3AF",

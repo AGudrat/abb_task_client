@@ -5,6 +5,7 @@ export const useSessions = (initialSessionId = null, triggerPopper) => {
   const [sessions, setSessions] = useState([]);
   const [currentSessionId, setCurrentSessionId] = useState(initialSessionId);
   const [isFileUploadOpen, setIsFileUploadOpen] = useState(false);
+  const [isScraperModalOpen, setIsScraperModalOpen] = useState(false);
 
   // Fetch sessions on component mount
   useEffect(() => {
@@ -98,7 +99,9 @@ export const useSessions = (initialSessionId = null, triggerPopper) => {
     // Close the file upload modal
     setIsFileUploadOpen(false);
   };
-
+  const toggleScraperModal = () => {
+    setIsScraperModalOpen((prev) => !prev);
+  };
   // Close FileUpload modal
   const closeFileUpload = () => {
     if (sessions.length > 0) {
@@ -124,6 +127,8 @@ export const useSessions = (initialSessionId = null, triggerPopper) => {
     sessions,
     currentSessionId,
     isFileUploadOpen,
+    isScraperModalOpen,
+    toggleScraperModal,
     handleSessionSelect,
     handleDeleteSession,
     handleUploadSuccess,
