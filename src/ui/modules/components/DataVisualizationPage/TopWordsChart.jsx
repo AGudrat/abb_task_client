@@ -1,3 +1,4 @@
+import { ChartBarIcon } from "@heroicons/react/24/outline";
 import React from "react";
 import {
   BarChart,
@@ -37,13 +38,31 @@ function TopWordsCart({ top10WordsData }) {
 
   return (
     <div className="h-[600px] w-full rounded-[10px] bg-black p-[16px]">
-      <ResponsiveContainer width="100%" height="100%">
+      <div className="mb-4 flex flex-row items-center justify-between">
+        <div className="flex flex-row items-center justify-center gap-x-[8px]">
+          <div className="flex h-[34px] w-[34px] items-center justify-center rounded-[10px] border border-white bg-white">
+            <ChartBarIcon width={20} />
+          </div>
+          <div className="flex flex-col  justify-center">
+            <h2 className="text-lg font-medium text-white">User Reviews</h2>
+            <p className="text-sm leading-3 text-white text-opacity-65">
+              Top 10 most used words by users
+            </p>
+          </div>
+        </div>
+      </div>
+      <ResponsiveContainer width="100%" height="90%">
         <BarChart data={transformedData} layout="vertical">
           <CartesianGrid vertical={false} strokeDasharray="3 3" />
           {/* Set the XAxis domain to [0, maxCount + padding] */}
           <XAxis type="number" domain={[0, maxCount + 2]} />
           {/* Change YAxis label color to white */}
-          <YAxis type="category" dataKey="word" width={150} tick={{ fill: 'white' }} />
+          <YAxis
+            type="category"
+            dataKey="word"
+            width={150}
+            tick={{ fill: "white" }}
+          />
           <Tooltip content={<CustomTooltip />} />
           <Bar dataKey="count" fill="#82ca9d" />
         </BarChart>

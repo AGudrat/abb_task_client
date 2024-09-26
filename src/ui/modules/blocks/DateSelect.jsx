@@ -6,7 +6,7 @@ function DateSelect({ filterDays, setFilterDays }) {
   };
 
   return (
-    <div className="mb-4  flex justify-end">
+    <div className="flex justify-end">
       <select
         className="rounded-md border bg-white bg-opacity-[9%] p-2 text-white text-opacity-80"
         value={filterDays}

@@ -1,3 +1,7 @@
+import {
+  PresentationChartLineIcon,
+  TableCellsIcon,
+} from "@heroicons/react/24/outline";
 import React, { useState } from "react";
 
 // Table to display user interactions with filters and pagination
@@ -34,7 +38,22 @@ function UserInteractionTable({ interactions }) {
   const displayedInteractions = filteredInteractions.slice(0, questionSize);
 
   return (
-    <div className="overflow-x-auto w-full rounded-[10px] bg-black p-4">
+    <div className="w-full overflow-x-auto rounded-[10px] bg-black p-4">
+      <div className="mb-4 flex flex-row items-center justify-between">
+        <div className="flex flex-row items-center justify-center gap-x-[8px]">
+          <div className="flex h-[34px] w-[34px] items-center justify-center rounded-[10px] border border-white bg-white">
+            <TableCellsIcon width={20} />
+          </div>
+          <div className="flex flex-col  justify-center">
+            <h2 className="text-lg font-medium text-white">
+              User interactions
+            </h2>
+            <p className="text-sm leading-3 text-white text-opacity-65">
+              All user interactions
+            </p>
+          </div>
+        </div>
+      </div>
       {/* Filters */}
       <div className="mb-4 grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
         <div>

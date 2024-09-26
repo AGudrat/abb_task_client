@@ -10,6 +10,7 @@ import {
 } from "recharts";
 import dayjs from "dayjs";
 import DateSelect from "../../blocks/DateSelect";
+import { PresentationChartLineIcon } from "@heroicons/react/24/outline";
 
 // Custom Tooltip Component
 const CustomTooltip = ({ active, payload, label }) => {
@@ -63,8 +64,23 @@ function InteractionOverTimeChart({ interactionsOverTime }) {
 
   return (
     <div className="h-[600px] w-full rounded-[10px] bg-black p-[16px]">
-      {/* Dropdown for filtering the data */}
-      <DateSelect filterDays={filterDays} setFilterDays={setFilterDays} />
+      <div className="mb-4  flex flex-row items-center justify-between">
+        <div className="flex flex-row items-center justify-center gap-x-[8px]">
+          <div className="flex h-[34px] w-[34px] items-center justify-center rounded-[10px] border border-white bg-white">
+            <PresentationChartLineIcon width={20} />
+          </div>
+          <div className="flex flex-col  justify-center">
+            <h2 className="text-lg font-medium text-white">
+              User Interactions
+            </h2>
+            <p className="text-sm leading-3 text-white text-opacity-65">
+              All user interaction counts
+            </p>
+          </div>
+        </div>
+        {/* Dropdown for filtering the data */}
+        <DateSelect filterDays={filterDays} setFilterDays={setFilterDays} />
+      </div>
 
       <ResponsiveContainer width="100%" height="90%">
         <AreaChart data={filteredData}>
