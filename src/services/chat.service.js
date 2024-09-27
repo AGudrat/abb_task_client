@@ -10,10 +10,28 @@ export const uploadTxtFile = (formData, onUploadProgress, cancelToken) => {
     },
     onUploadProgress: (progressEvent) => {
       const progress = Math.round(
-        (progressEvent.loaded * 100) / progressEvent.total
+        (progressEvent.loaded * 100) / progressEvent.total,
       );
       onUploadProgress(progress);
     },
-    cancelToken: cancelToken, 
+    cancelToken: cancelToken,
   });
+};
+
+export const sendLikeDislike = async (sessionId, messageIndex, liked) => {
+  const response = await fetch(baseUrl + "like-dislike/", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      session_id: sessionId,
+      message_index: messageIndex,
+      liked: liked,
+    }),
+  });
+
+  if (!response.ok) {
+    throw new Error("Error updating like/dislike status.");
+  }
 };

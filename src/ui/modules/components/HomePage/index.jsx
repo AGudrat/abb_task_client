@@ -8,10 +8,10 @@ import { useConversation } from "@/hooks/useConversation";
 import Header from "../../blocks/Header";
 import ChatContainer from "./Chat/ChatContainer";
 import SideBar from "./SideBar/index";
-import ScraperModal from "./ScraperModal";
+import ScraperModal from "./ScraperModal/ScraperModal";
 
 const FileUpload = dynamic(
-  () => import("@/ui/modules/components/HomePage/FileUpload"),
+  () => import("@/ui/modules/components/HomePage/FileUploadModal/FileUpload"),
   {
     loading: () => <></>,
   },
