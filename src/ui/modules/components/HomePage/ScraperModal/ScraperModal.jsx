@@ -26,8 +26,8 @@ export default function ScraperModal({ toggleScraperModal }) {
         setErrorMessage("Failed to scrape the text.");
       }
     } catch (error) {
-      console.error("Error scraping text:", error);
-      setErrorMessage("An error occurred while scraping text.");
+      console.error("Error scraping text:", error.response.data.error);
+      setErrorMessage(error.response.data.error);
     } finally {
       setIsLoading(false);
     }
